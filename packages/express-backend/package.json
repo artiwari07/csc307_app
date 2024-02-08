@@ -1,21 +1,21 @@
 {
-  "name": "csc-307-app",
+  "name": "express-backend",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "type": "module",
+  "main": "backend.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "cd packages/react-frontend && npm start"
+    "dev": "npx nodemon backend.js",
+    "start": "node backend.js"
   },
   "author": "",
   "license": "ISC",
-  "workspaces": [
-    "packages/*"
-  ],
-  "dependencies": {
-    "create-react-app": "^5.0.1"
-  },
   "devDependencies": {
     "nodemon": "^3.0.3"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "mongoose": "^8.1.1"
   }
 }
