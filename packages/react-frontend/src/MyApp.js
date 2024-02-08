@@ -22,6 +22,7 @@ function MyApp() {
         .then((addedUser) => {
           console.log("Generated ID:", addedUser.id);
           // Only update characters if JSON parsing is successful
+          console.log("Added User:", addedUser);
           setCharacters([...characters, addedUser]);
         })
         .catch((error) => {
@@ -30,12 +31,12 @@ function MyApp() {
     }
 
     function fetchUsers() {
-      const promise = fetch("http://localhost:8000/users");
+      const promise = fetch("http://localhost:8000/user");
       return promise;
     }
 
     function postUser(person) {
-      const promise = fetch("http://localhost:8000/users", {
+      const promise = fetch("http://localhost:8000/user", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -46,10 +47,19 @@ function MyApp() {
       return promise;
     }
 
+    function deleteUsers(id)
+    {
+      const promise = fetch(`http://localhost:8000/user/${id}`, {
+         method: "DELETE"
+    });
+    return promise;
+  }
+
     function removeOneCharacter(id, index) {
-      fetch(`http://localhost:8000/users/${id}`, {
-        method: "DELETE",
-      })
+      // fetch(`http://localhost:8000/users/${id}`, {
+      //   method: "DELETE",
+      // })
+      deleteUsers(id)
         .then((response) => {
           if (response.status === 204) {
             console.log("User deleted successfully! Status code:", response.status);
@@ -63,11 +73,10 @@ function MyApp() {
             throw new Error("Failed to delete user");
           }
         })
-        .then((deletedUser) => {
+        .then(() => {
           // Wait for the DELETE request to be successful on the backend before updating the frontend
           const updatedCharacters = characters.filter((_, i) => i !== index);
           setCharacters(updatedCharacters);
-          console.log("Deleted User:", deletedUser);
         })
         .catch((error) => {
           console.error("Error deleting user:", error);
@@ -76,10 +85,14 @@ function MyApp() {
     
     useEffect(() => {
       fetchUsers()
-        .then((res) => res.json())
-        .then((json) => setCharacters(json["users_list"]))
-        .catch((error) => { console.log(error); });
-    }, [] );
+        .then((res) => res.text())
+        .then((text) => {
+          console.log(text); // Log the raw response
+          const json = JSON.parse(text);
+          setCharacters(json["user_list"]);
+        })
+        .catch((error) => console.log(error));
+    }, []);
     
     return (
       <div className="container">
@@ -93,6 +106,5 @@ function MyApp() {
 
     
 }
-
 
 export default MyApp;
